@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link
+		href="https://fonts.googleapis.com/css?family=Montserrat:100,200,300,regular,500,600,700,800,900,100italic,200italic,300italic,italic,500italic,600italic,700italic,800italic,900italic"
+		rel="stylesheet" />
+</head>
+
+<body>
+	<style>
+		*,
+		*::before,
+		*::after {
+			box-sizing: border-box;
+		}
+
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Montserrat', sans-serif;
+			color: #2c2c2c;
+			font-size: 18px;
+		}
+
+		.quiz {
+			/* padding-bottom: 540px; */
+			/* background: url('grape-bg.png') bottom right 100px / 400px no-repeat; */
+			overflow: hidden;
+		}
+
+		.container {
+			max-width: 1060px;
+			margin: 0 auto;
+			width: 100%;
+			padding: 16px;
+		}
+
+		.quiz__title {
+			position: relative;
+			display: inline-block;
+			vertical-align: middle;
+			font-size: 24px;
+			padding: 0 12px 6px 12px;
+			text-transform: uppercase;
+			font-weight: 700;
+			margin: 24px 0 24px -12px;
+		}
+
+		.quiz__title--icon {
+			padding-left: 52px;
+		}
+
+		.quiz__title--icon::before {
+			position: absolute;
+			content: "";
+			z-index: -1;
+			/* background: #DFC0C7; */
+			background: #d3ccbc;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			height: 65%;
+		}
+
+		.quiz__title img {
+			position: absolute;
+			left: 0;
+			bottom: 6px;
+			flex-shrink: 0;
+		}
+
+		.quiz__list {
+			padding-left: 20px;
+			margin-top: 0;
+		}
+
+		.quiz__list-item:not(:last-child) {
+			margin-bottom: 8px;
+		}
+
+		.quiz__row {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 0 30px;
+			margin-bottom: 48px;
+		}
+
+		.quiz__col-item:not(:last-child) {
+			margin-bottom: 6px;
+		}
+
+		.quiz__wheel-template {
+			text-align: center;
+			margin-bottom: 48px;
+		}
+
+		.qioz__canvas-template {
+			max-width: 100%;
+		}
+
+		.quiz__box:not(:last-child) {
+			margin-bottom: 72px;
+		}
+
+		.quiz__items {
+			padding-top: 12px;
+		}
+
+		.quiz__item:not(:last-child) {
+			margin-bottom: 20px;
+		}
+
+		.quiz__question {
+			margin-bottom: 10px;
+		}
+
+		.quiz__btn {
+			margin-bottom: 24px;
+			background: #000;
+			margin-top: 24px;
+			color: #2c2c2c;
+			background-color: #d3ccbc;
+			border: none;
+			border-radius: 50px;
+			font-family: 'Montserrat', sans-serif;
+			font-weight: 500;
+			text-align: center;
+			cursor: pointer;
+			font-size: 14px;
+			padding: 10px 30px;
+			transition: background .3s, color .3s;
+		}
+
+		.quiz__btn:hover {
+			color: #d3ccbc;
+			background-color: #2c2c2c;
+		}
+
+		.quiz__answer {
+			display: inline-block;
+			width: 100px;
+			font-size: 16px;
+		}
+
+		.quiz__answer input {
+			accent-color: #6d8764;
+		}
+
+		.wheel {
+			display: flex;
+			justify-content: center;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.wheel__canvas {
+			display: none;
+			width: 600px;
+			height: 600px;
+			object-fit: contain;
+			max-width: 100%;
+		}
+
+		.quiz.is-finished .quiz__form,
+		.quiz.is-finished .quiz__wheel-template {
+			display: none;
+		}
+	</style>
+
+	<section class="quiz">
+		<div class="container">
+			<div class="quiz__inner">
+				<p>Колесо баланса - это приём, который помогает проанализировать слабые стороны вашего рациона.</p>
+
+				<h3 class="quiz__title">Способ заполнения:</h3>
+				<ol class="quiz__list">
+					<li class="quiz__list-item">Ответить на поставленные вопросы в каждом секторе.</li>
+					<li class="quiz__list-item">При ответе "да" на вопрос закрасить одну часть сектора. Максимальное количество
+						ответов "да" равно 8
+						отметкам, сектор будет закрашен полностью.</li>
+					<li class="quiz__list-item">Оценить, какие сферы закрашены не полностью и нуждаются в дополнительной
+						коррекции?</li>
+					<li class="quiz__list-item">При гармонии во всех секторах у вас получится круг.</li>
+				</ol>
+
+				<h3 class="quiz__title">Сферы:</h3>
+				<div class="quiz__row">
+					<div class="quiz__col">
+						<div class="quiz__col-item">1. Вода</div>
+						<div class="quiz__col-item">2. Белок</div>
+					</div>
+					<div class="quiz__col">
+						<div class="quiz__col-item">3. Жиры</div>
+						<div class="quiz__col-item">4. Углеводы и клетчатка</div>
+					</div>
+					<div class="quiz__col">
+						<div class="quiz__col-item">5. Организация приемов пищи</div>
+						<div class="quiz__col-item">6. Разнообразие продуктов питания</div>
+					</div>
+				</div>
+
+				<div class="quiz__wheel-template">
+					<canvas class="qioz__canvas-template" id="wheel-template" width="600" height="600"></canvas>
+				</div>
+
+				<form class="quiz__form">
+					<!-- Вода -->
+					<div class="quiz__box" data-section="Вода" data-color="#f82">
+						<div class="quiz__title quiz__title--icon">
+							<img src="water-icon.svg" width="42" alt="вода">
+							Вода
+						</div>
+						<div class="quiz__items">
+							<div class="quiz__item">
+								<div class="quiz__question">1. В день пьете не менее 30 мл/кг чистой воды?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="water1">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="water1">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">2. Отличаете жажду от голода?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="water2">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="water2">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">3. Пьете воду с pH 7,5-8? (Если не измеряете - ставить ответ "Нет")</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="water3">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="water3">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">4. Пьете воду с поверхностным натяжением близким к 43 дин/см? (Если не
+									измеряете
+									- ставить ответ "Нет")</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="water4">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="water4">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">5. Следите за минерализацией питьевой воды?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="water5">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="water5">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">6. Утро начинаете с употребления воды?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="water6">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="water6">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">7. Регулярно пьете воду с лимоном или натуральным яблочным уксусом?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="water7">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="water7">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">8. Всегда рядом с собой есть вода (на рабочем столе/ на прогулке и прочее)?
+								</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="water8">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="water8">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Белок -->
+					<div class="quiz__box" data-section="Белок" data-color="#0bf">
+						<div class="quiz__title quiz__title--icon">
+							<img src="egg-icon.svg" width="42" alt="Яйцо">
+							Белок
+						</div>
+						<div class="quiz__items">
+							<div class="quiz__item">
+								<div class="quiz__question">1. В каждом приеме пищи присутствует источник белка
+									(рыба/мясо/морепродукты/яйца и прочие)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="protein1">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="protein1">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">2. Раз в неделю устраиваете постные дни?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="protein2">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="protein2">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">3. Используете разные виды животного белка (рыба/мясо/птица)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="protein3">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="protein3">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">4. Употребляете растительный белок (бобовые/орехи/семена/водоросли/овощи и
+									прочие)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="protein4">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="protein4">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">5. Ограничиваете потребление красного мяса (до 1-2 раз в неделю)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="protein5">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="protein5">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">6. Маринуете мясо перед готовкой?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="protein6">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="protein6">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">7. Используете щадящие способы приготовления мяса (тушение, запекание при
+									низких температурах и прочие)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="protein7">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="protein7">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">8. Отсутствует сонливость после употребления белковой пищи?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="protein8">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="protein8">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Жиры -->
+					<div class="quiz__box" data-section="Жиры" data-color="#fb0">
+						<div class="quiz__title quiz__title--icon">
+							<img src="fats-icon.svg" width="42" alt="Жиры">
+							Жиры
+						</div>
+						<div class="quiz__items">
+							<div class="quiz__item">
+								<div class="quiz__question">1. Едите животные жиры (сливочное масло, масло гхи, яйца, сало, жирное
+									мясо)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="fats1">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="fats1">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">2. В рационе отсутствуют прогорклые масла и продукты, содержащие транс-жиры
+									(маргарин, промышленная выпечка, сухари, печенье, вафли, майонез, попкорн, крекеры, чипсы,
+									полуфабрикаты)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="fats2">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="fats2">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">3. Едите жирную морскую рыбу 2-3 раза в неделю?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="fats3">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="fats3">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">4. Готовите пищу на насыщенных жирах (масло гхи, кокосовое масло, животный
+									жир)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="fats4">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="fats4">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">5. Употребляете ежедневно в пищу свежие нерафинированные качественные
+									растительные масла?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="fats5">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="fats5">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">6. Едите предварительно замоченные орехи и семена?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="fats6">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="fats6">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">7. После употребления жирной пищи отсутствует тяжесть и дикомфорт в животе?
+								</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="fats7">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="fats7">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">8. Стул смывается не оставляя следов на стенках унитаза?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="fats8">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="fats8">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Углеводы и клетчатка -->
+					<div class="quiz__box" data-section="Углеводы и клетчатка" data-color="#0fb">
+						<div class="quiz__title quiz__title--icon">
+							<img src="broccoli-icon.svg" width="42" alt="Брокколи">
+							Углеводы и клетчатка
+						</div>
+						<div class="quiz__items">
+							<div class="quiz__item">
+								<div class="quiz__question">1. Ежедневно едите клетчатку в виде зелени, цельных круп, овощей?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="carbohydrates1">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="carbohydrates1">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">2. В рационе отсутствуют жидкие углеводы (соки, газировки, фруктовые смузи)?
+								</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="carbohydrates2">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="carbohydrates2">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">3. В рационе отсутствуют продукты с добавленным сахаром в составе, в том
+									числе фруктозными, кукурузными сиропами, медом?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="carbohydrates3">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="carbohydrates3">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">4. Покупаете цельные злаки долгой варки вместо хлопьев быстрого
+									приготовления?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="carbohydrates4">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="carbohydrates4">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">5. После еды отсутствует вздутие живота и урчание в кишечнике?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="carbohydrates5">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="carbohydrates5">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">6. Есть ежедневный регулярный стул?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="carbohydrates6">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="carbohydrates6">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">7. После основного приема пищи долго не испытываете голод?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="carbohydrates7">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="carbohydrates7">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">8. В рационе отсутствуют покупные соусы, например кетчуп?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="carbohydrates8">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="carbohydrates8">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Организация приемов пищи -->
+					<div class="quiz__box" data-section="Организация приемов пищи" data-color="#b0f">
+						<div class="quiz__title quiz__title--icon">
+							<img src="plate-icon.svg" width="42" alt="Тарелка и приборы">
+							Организация приемов пищи
+						</div>
+						<div class="quiz__items">
+							<div class="quiz__item">
+								<div class="quiz__question">1. Присутствует не более 3 основных приемов пищи и 1 перекус в день?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="meals1">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="meals1">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">2. Последний приём пищи не позже, чем за 3 часа до сна?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="meals2">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="meals2">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">3. Есть чистые промежутки между приемами пищи не менее 3-х часов, и чистый
+									ночной промежуток хотя бы в 12 часов?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="meals3">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="meals3">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">4. Едите без телефона и компьютера, сосредоточившись на еде?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="meals4">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="meals4">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">5. Чувствуете изменение вкуса пищи во время жевания (у правильно
+									пережеванной пищи появляется сладкий вкус)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="meals5">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="meals5">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">6. Запиваете ли еду кофе или чаем ("Да", если не запиваете)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="meals6">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="meals6">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">7. Отсутствуют приемы пищи на бегу?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="meals7">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="meals7">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">8. Всегда завтракаете?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="meals8">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="meals8">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Разнообразие продуктов питания -->
+					<div class="quiz__box" data-section="Разнообразие" data-color="#bf0">
+						<div class="quiz__title quiz__title--icon">
+							<img src="rainbow-icon.svg" width="42" alt="Радуга">
+							Разнообразие продуктов питания
+						</div>
+						<div class="quiz__items">
+							<div class="quiz__item">
+								<div class="quiz__question">1. Включаете в каждый прием пищи продукты не менее 3-х цветов?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="variety1">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="variety1">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">2. Придерживаетесь принципа ротации (1 продукт не чаще чем раз в 2 дня)?
+								</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="variety2">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="variety2">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">3. Используете фрукты и овощи в свежем виде?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="variety3">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="variety3">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">4. Ежедневно употребляете ягоды в свежем или замороженном виде?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="variety4">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="variety4">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">5. Ежедневно употребляете специи ярких цветов (куркумин, паприка, красный и
+									черный перец, фенхель и прочие)?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="variety5">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="variety5">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">6. Включаете сладкий, горький, вяжущий, острый, кислый и соленый вкусы в
+									каждый прием пищи?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="variety6">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="variety6">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">7. Меняете виды круп в своем рационе?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="variety7">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="variety7">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+							<div class="quiz__item">
+								<div class="quiz__question">8. Используете в рационе продукты всех цветов радуги?</div>
+								<div class="quiz__answers">
+									<label class="quiz__answer">
+										<input type="radio" value="Да" name="variety8">
+										<span>Да</span>
+									</label>
+									<label class="quiz__answer">
+										<input type="radio" value="Нет" name="variety8">
+										<span>Нет</span>
+									</label>
+								</div>
+							</div>
+						</div>
+						<button class="quiz__btn">Завершить тест</button>
+					</div>
+
+				</form>
+
+				<p>Заполнить колесо пищевого баланса и проанализировать, какие сферы требуют мер по работе с ними.</p>
+				<p><b>Если сектор заполнен менее, чем на половину </b> (ответили положительно меньше, чем на 4 вопросов) -
+					значит в данный момент эта сфера значительно "проседает" и для восстановления баланса необходимо заняться ее
+					коррекцией в первую очередь.</p>
+
+
+
+				<div class="wheel">
+					<canvas class="wheel__canvas" id="wheel" width="600" height="600"></canvas>
+
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<script>
+		const submitBtn = document.querySelector('.quiz__btn');
+		const sectors = [];
+		const templateCanvas = document.querySelector("#wheel-template");
+		const wheelCanvas = document.querySelector("#wheel");
+
+		const wheel = {
+			steps: 9,
+			sectors: 6
+		}
+
+		CanvasRenderingContext2D.prototype.fillTextCircleSimple = function (text, x, y, radius, startRotation) {
+			var numRadsPerLetter = 2 * Math.PI / text.length;
+			this.save();
+			this.translate(x, y);
+			this.rotate(startRotation);
+
+			for (var i = 0; i < text.length; i++) {
+				this.save();
+				this.rotate(i * numRadsPerLetter);
+
+				this.fillText(text[i], 0, -radius);
+				this.restore();
+			}
+			this.restore();
+		}
+
+		submitBtn.addEventListener('click', function (e) {
+			e.preventDefault();
+
+			const quizSection = document.querySelector('.quiz');
+			const boxes = document.querySelectorAll('.quiz__box');
+
+			boxes.forEach((box, i) => {
+				let progress = 0;
+				const inputs = box.querySelectorAll('.quiz__item input');
+
+				inputs.forEach(input => {
+					if (input.checked === true && input.value === 'Да') {
+						progress++;
+					}
+				})
+
+				sectors[i].progress = progress;
+				quizSection.classList.add('is-finished');
+
+				// console.log(progress);
+			})
+
+			initCanvas();
+		})
+
+		addCircleMethodsToCanvas();
+		initSectors();
+		drawTemplate(templateCanvas.getContext`2d`, templateCanvas.width);
+
+		function initSectors() {
+			const boxes = document.querySelectorAll('.quiz__box');
+
+			boxes.forEach(box => {
+				sectors.push({
+					color: box.dataset.color,
+					label: box.dataset.section
+				})
+			})
+
+			wheel.sectors = sectors.length;
+
+		}
+
+		function initCanvas() {
+			const ctx = wheelCanvas.getContext`2d`;
+			const dia = ctx.canvas.width;
+			const rad = dia / 2;
+			const step = rad / wheel.steps;
+			const startAngle = -90;
+			let ang = startAngle;
+			const rotateStep = 360 / sectors.length;
+
+			const drawSector = (sector, i) => {
+				ctx.save();
+				// COLOR
+				ctx.beginPath();
+				ctx.fillStyle = sector.color;
+				ctx.moveTo(rad, rad);
+				ctx.arc(rad, rad, (step * sector.progress), degreesToRadians(ang), degreesToRadians(ang + rotateStep));
+				ctx.lineTo(rad, rad);
+				ctx.fill();
+				ctx.moveTo(rad, rad);
+				ctx.restore();
+				ang += rotateStep;
+			}
+
+			drawTemplate(ctx, dia);
+			wheelCanvas.style.display = 'block';
+			sectors.forEach(drawSector);
+		}
+
+		function drawTemplate(ctx, dia) {
+			const fault = 39.5;
+			const rad = dia / 2;
+			const step = rad / wheel.steps;
+			const rotateStep = 360 / wheel.sectors;
+
+			// Lines data
+			const from1 = { x: fault, y: (rad - rad / 2) };
+			const to1 = { x: dia - fault, y: (rad + rad / 2) };
+			const from2 = { x: fault, y: (rad + rad / 2) };
+			const to2 = { x: dia - fault, y: (rad - rad / 2) };
+			const from3 = { x: rad, y: 0 };
+			const to3 = { x: rad, y: dia };
+
+			// Vertical arrow line
+			ctx.beginPath();
+			drawArrow(ctx, from3.x, from3.y, to3.x, to3.y);
+			ctx.stroke();
+
+			// Horizontal arrow lines
+			ctx.beginPath();
+			drawArrow(ctx, from1.x, from1.y, to1.x, to1.y);
+			ctx.stroke();
+
+			ctx.beginPath();
+			drawArrow(ctx, from2.x, from2.y, to2.x, to2.y);
+			ctx.stroke();
+
+			// Circles
+			for (let i = 1; i < wheel.steps; i++) {
+				ctx.beginPath();
+				ctx.arc(rad, rad, (step * i), 0, 2 * Math.PI);
+				ctx.stroke();
+				ctx.restore();
+			}
+
+			//Text
+			ctx.fillStyle = "#161616";
+			ctx.textAlign = "center";
+			ctx.textBaseline = 'middle';
+			ctx.font = "18px sans-serif";
+
+			const startAngle = -60;
+			let ang = startAngle;
+
+			for (let i = 0; i < wheel.sectors; i++) {
+
+				// ctx.arc(rad, rad, rad, degreesToRadians(ang) - Math.PI / 2, degreesToRadians(ang + rotateStep) - Math.PI / 2);
+
+				// drawTextAlongArc(ctx, sectors[i].label, rad, rad, rad, degreesToRadians(ang));
+
+				ctx.fillCircleText(sectors[i].label, rad, rad, rad - step / 2, degreesToRadians(ang));
+				// ctx.fillTextCircleSimple(sectors[i].label, rad, rad, rad, Math.PI / 2);
+				ang += rotateStep;
+			}
+
+			// ctx.translate(rad, rad);
+			// ctx.rotate(ang + arc / 2);
+			// ctx.fillText(sector.label, rad, 30);
+		}
+
+		function drawArrow(context, fromx, fromy, tox, toy) {
+			var headlen = 10;
+			var dx = tox - fromx;
+			var dy = toy - fromy;
+
+			var dx2 = fromx - tox;
+			var dy2 = fromy - toy;
+
+			var angle = Math.atan2(dy, dx);
+			var angle2 = Math.atan2(dy2, dx2);
+
+			context.moveTo(fromx, fromy);
+
+			context.lineTo(tox, toy);
+			context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+			context.moveTo(tox, toy);
+			context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+
+			context.moveTo(fromx, fromy);
+
+			context.lineTo(fromx - headlen * Math.cos(angle2 - Math.PI / 6), fromy - headlen * Math.sin(angle2 - Math.PI / 6));
+			context.moveTo(fromx, fromy);
+			context.lineTo(fromx - headlen * Math.cos(angle2 + Math.PI / 6), fromy - headlen * Math.sin(angle2 + Math.PI / 6));
+		}
+
+
+
+		function addCircleMethodsToCanvas() {
+			const FILL = 0;        // const to indicate filltext render
+			const STROKE = 1;
+			var renderType = FILL; // used internal to set fill or stroke text
+			const multiplyCurrentTransform = true; // if true Use current transform when rendering
+			// if false use absolute coordinates which is a little quicker
+			// after render the currentTransform is restored to default transform
+
+			// measure circle text
+			// ctx: canvas context
+			// text: string of text to measure
+			// r: radius in pixels
+			//
+			// returns the size metrics of the text
+			//
+			// width: Pixel width of text
+			// angularWidth : angular width of text in radians
+			// pixelAngularSize : angular width of a pixel in radians
+			var measure = function (ctx, text, radius) {
+				var textWidth = ctx.measureText(text).width; // get the width of all the text
+				return {
+					width: textWidth,
+					angularWidth: (1 / radius) * textWidth,
+					pixelAngularSize: 1 / radius
+				};
+			}
+
+			// displays text along a circle
+			// ctx: canvas context
+			// text: string of text to measure
+			// x,y: position of circle center
+			// r: radius of circle in pixels
+			// start: angle in radians to start. 
+			// [end]: optional. If included text align is ignored and the text is 
+			//        scaled to fit between start and end;
+			// [forward]: optional default true. if true text direction is forwards, if false  direction is backward
+			var circleText = function (ctx, text, x, y, radius, start, end, forward) {
+				var i, textWidth, pA, pAS, a, aw, wScale, aligned, dir, fontSize;
+				if (text.trim() === "" || ctx.globalAlpha === 0) { // dont render empty string or transparent
+					return;
+				}
+				if (isNaN(x) || isNaN(y) || isNaN(radius) || isNaN(start) || (end !== undefined && end !== null && isNaN(end))) { // 
+					throw TypeError("circle text arguments requires a number for x,y, radius, start, and end.")
+				}
+				aligned = ctx.textAlign;        // save the current textAlign so that it can be restored at end
+				dir = forward ? 1 : forward === false ? -1 : 1;  // set dir if not true or false set forward as true  
+				pAS = 1 / radius;               // get the angular size of a pixel in radians
+				textWidth = ctx.measureText(text).width; // get the width of all the text
+				if (end !== undefined && end !== null) { // if end is supplied then fit text between start and end
+					pA = ((end - start) / textWidth) * dir;
+					wScale = (pA / pAS) * dir;
+				} else {                 // if no end is supplied correct start and end for alignment
+					// if forward is not given then swap top of circle text to read the correct direction
+					if (forward === null || forward === undefined) {
+						if (((start % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) > Math.PI) {
+							dir = -1;
+						}
+					}
+					pA = -pAS * dir;
+					wScale = -1 * dir;
+					switch (aligned) {
+						case "center":       // if centered move around half width
+							start -= (pA * textWidth) / 2;
+							end = start + pA * textWidth;
+							break;
+						case "right":// intentionally falls through to case "end"
+						case "end":
+							end = start;
+							start -= pA * textWidth;
+							break;
+						case "left":  // intentionally falls through to case "start"
+						case "start":
+							end = start + pA * textWidth;
+					}
+				}
+
+				ctx.textAlign = "center";                     // align for rendering
+				a = start;                                    // set the start angle
+				for (var i = 0; i < text.length; i += 1) {    // for each character
+					aw = ctx.measureText(text[i]).width * pA; // get the angular width of the text
+					var xDx = Math.cos(a + aw / 2);           // get the yAxies vector from the center x,y out
+					var xDy = Math.sin(a + aw / 2);
+					if (multiplyCurrentTransform) { // transform multiplying current transform
+						ctx.save();
+						if (xDy < 0) { // is the text upside down. If it is flip it
+							ctx.transform(-xDy * wScale, xDx * wScale, -xDx, -xDy, xDx * radius + x, xDy * radius + y);
+						} else {
+							ctx.transform(-xDy * wScale, xDx * wScale, xDx, xDy, xDx * radius + x, xDy * radius + y);
+						}
+					} else {
+						if (xDy < 0) { // is the text upside down. If it is flip it
+							ctx.setTransform(-xDy * wScale, xDx * wScale, -xDx, -xDy, xDx * radius + x, xDy * radius + y);
+						} else {
+							ctx.setTransform(-xDy * wScale, xDx * wScale, xDx, xDy, xDx * radius + x, xDy * radius + y);
+						}
+					}
+					if (renderType === FILL) {
+						ctx.fillText(text[i], 0, 0);    // render the character
+					} else {
+						ctx.strokeText(text[i], 0, 0);  // render the character
+					}
+					if (multiplyCurrentTransform) {  // restore current transform
+						ctx.restore();
+					}
+					a += aw;                     // step to the next angle
+				}
+				// all done clean up.
+				if (!multiplyCurrentTransform) {
+					ctx.setTransform(1, 0, 0, 1, 0, 0); // restore the transform
+				}
+				ctx.textAlign = aligned;            // restore the text alignment
+			}
+			// define fill text
+			var fillCircleText = function (text, x, y, radius, start, end, forward) {
+				renderType = FILL;
+				circleText(this, text, x, y, radius, start, end, forward);
+			}
+			// define stroke text
+			var strokeCircleText = function (text, x, y, radius, start, end, forward) {
+				renderType = STROKE;
+				circleText(this, text, x, y, radius, start, end, forward);
+			}
+			// define measure text
+			var measureCircleTextExt = function (text, radius) {
+				return measure(this, text, radius);
+			}
+			// set the prototypes
+			CanvasRenderingContext2D.prototype.fillCircleText = fillCircleText;
+			CanvasRenderingContext2D.prototype.strokeCircleText = strokeCircleText;
+			CanvasRenderingContext2D.prototype.measureCircleText = measureCircleTextExt;
+		};
+
+		function drawTextAlongArc(context, str, centerX, centerY, radius, angle) {
+			context.save();
+			context.translate(centerX, centerY);
+			context.rotate(-1 * angle / 2);
+			context.rotate(-1 * (angle / str.length) / 2);
+			for (var n = 0; n < str.length; n++) {
+				context.rotate(angle / str.length);
+				context.save();
+				context.translate(0, -1 * radius);
+				var char = str[n];
+				context.fillText(char, 0, 0);
+				context.restore();
+			}
+			context.restore();
+		}
+
+		function degreesToRadians(degrees) {
+			return degrees * (Math.PI / 180);
+		}
+
+		function radiansToDegrees(radians) {
+			return radians * (180 / Math.PI);
+		}
+
+	</script>
+
+</body>
+
+</html>
