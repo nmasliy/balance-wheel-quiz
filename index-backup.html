@@ -13,24 +13,24 @@
 
 <body>
 	<style>
-		*,
-		*::before,
-		*::after {
+		.quiz {
+			font-family: 'Montserrat', sans-serif;
+			overflow: hidden;
+			color: #2c2c2c;
+			padding-top: 20px;
+			font-size: 18px;
+			line-height: 1.3;
 			box-sizing: border-box;
 		}
 
-		body {
-			margin: 0;
-			padding: 0;
-			font-family: 'Montserrat', sans-serif;
-			color: #2c2c2c;
-			font-size: 18px;
+		.quiz p {
+			margin: 15px 0;
 		}
 
-		.quiz {
-			padding-bottom: 540px;
-			background: url('grape-bg.png') bottom right 100px / 400px no-repeat;
-			overflow: hidden;
+		.quiz *,
+		.quiz *::before,
+		.quiz *::after {
+			box-sizing: border-box;
 		}
 
 		.container {
@@ -59,7 +59,6 @@
 			position: absolute;
 			content: "";
 			z-index: -1;
-			/* background: #DFC0C7; */
 			background: #d3ccbc;
 			bottom: 0;
 			left: 0;
@@ -67,7 +66,8 @@
 			height: 65%;
 		}
 
-		.quiz__title img {
+		.quiz__title img,
+		.quiz__title svg {
 			position: absolute;
 			left: 0;
 			bottom: 6px;
@@ -94,15 +94,16 @@
 			margin-bottom: 6px;
 		}
 
-		.quiz__img {
+		.quiz__wheel-template {
 			text-align: center;
 			margin-bottom: 48px;
 		}
 
-		.quiz__img img {
-			display: inline-block;
+		.qioz__canvas-template {
 			max-width: 100%;
-			vertical-align: middle;
+			width: 660px;
+			height: auto;
+			object-fit: contain;
 		}
 
 		.quiz__box:not(:last-child) {
@@ -113,6 +114,14 @@
 			padding-top: 12px;
 		}
 
+		.quiz__item.is-invalid .quiz__answers::before {
+			display: block;
+			margin: 6px 0;
+			content: "Выберите один из вариантов ответа.";
+			font-size: 16px;
+			color: red;
+		}
+
 		.quiz__item:not(:last-child) {
 			margin-bottom: 20px;
 		}
@@ -121,10 +130,17 @@
 			margin-bottom: 10px;
 		}
 
+		.quiz__error {
+			margin: 24px 0 12px;
+			font-size: 16px;
+			font-weight: 500;
+			color: red;
+			display: none;
+		}
+
 		.quiz__btn {
-			margin-bottom: 24px;
 			background: #000;
-			margin-top: 24px;
+			margin: 24px 0;
 			color: #2c2c2c;
 			background-color: #d3ccbc;
 			border: none;
@@ -151,6 +167,70 @@
 
 		.quiz__answer input {
 			accent-color: #6d8764;
+		}
+
+		.quiz__download-btn-wrapper {
+			text-align: right;
+		}
+
+		.quiz__download-btn {
+			display: none;
+		}
+
+		.wheel {
+			display: flex;
+			justify-content: center;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.wheel__canvas {
+			display: none;
+			width: 660px;
+			height: auto;
+			object-fit: contain;
+			max-width: 100%;
+		}
+
+		.quiz.is-invalid .quiz__btn {
+			margin-top: 0;
+		}
+
+		.quiz.is-invalid .quiz__error {
+			display: block;
+		}
+
+		.quiz.is-finished .quiz__download-btn {
+			display: inline-block;
+		}
+
+		.quiz.is-finished .quiz__form,
+		.quiz.is-finished .quiz__wheel-template {
+			display: none;
+		}
+
+		@media (max-width: 768px) {
+			.quiz {
+				font-size: 16px;
+			}
+
+			.quiz__row {
+				display: block;
+			}
+
+			.quiz__title {
+				font-size: 20px;
+				margin-top: 16px;
+				margin-bottom: 16px;
+			}
+
+			.quiz__col-item {
+				margin-bottom: 6px;
+			}
+
+			.quiz__box:not(:last-child) {
+				margin-bottom: 48px;
+			}
 		}
 	</style>
 
@@ -186,19 +266,55 @@
 					</div>
 				</div>
 
-				<div class="quiz__wheel">
-
-				</div>
-
-				<div class="quiz__img">
-					<img src="temp.png" alt="Пустое колесо баланса">
+				<div class="quiz__wheel-template">
+					<canvas class="qioz__canvas-template" id="wheel-template" width="660" height="660"></canvas>
 				</div>
 
 				<form class="quiz__form">
 					<!-- Вода -->
-					<div class="quiz__box" data-section="Вода" data-color="#f82">
+					<div class="quiz__box" data-section="Вода" data-color="#0bf" data-icon=".water-icon">
 						<div class="quiz__title quiz__title--icon">
-							<img src="water-icon.svg" width="42" alt="вода">
+							<svg class="water-icon" width="42" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+								xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.002 512.002" xml:space="preserve"
+								fill="#000000">
+								<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+								<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+								<g id="SVGRepo_iconCarrier">
+									<g>
+										<rect x="79.343" y="198.922" style="fill:#ACD4F3;" width="116.357" height="311.791"></rect>
+										<path style="fill:#ACD4F3;"
+											d="M419.471,261.9c7.328,0.114,13.191-6.128,13.191-13.457v-88.74c0-26.09-13.531-49.009-33.954-62.147 c-9.696-6.237-15.626-16.908-15.626-28.437V21.603h-72.881v41.3c0,12.847-7.261,24.665-18.835,30.241 c-24.756,11.926-41.842,37.241-41.842,66.561v88.74c0,7.329,5.863,13.571,13.191,13.457c7.502-0.117,13.619,5.929,13.619,13.403 v31.181c0,7.329-5.863,13.571-13.191,13.457c-7.502-0.117-13.619,5.929-13.619,13.403v137.161 c0,22.916,18.578,41.494,41.494,41.494h100.152c22.916,0,41.494-18.578,41.494-41.494V333.395c0-7.329-5.863-13.571-13.191-13.457 c-7.502,0.117-13.619-5.929-13.619-13.403v-31.231C405.852,267.829,411.97,261.784,419.471,261.9z">
+										</path>
+									</g>
+									<path style="opacity:0.44;fill:#3C66B1;enable-background:new ;"
+										d="M249.524,469.22c0,22.916,18.578,41.494,41.494,41.494 H391.17c22.916,0,41.494-18.578,41.494-41.494L249.524,469.22z">
+									</path>
+									<g style="opacity:0.44;">
+										<path style="fill:#3C66B1;"
+											d="M279.863,178.801c-4.556,0-8.25-3.693-8.25-8.25c0-31.338,18.258-60.383,46.512-73.994 c8.605-4.146,14.166-13.098,14.166-22.808c0-4.557,3.694-8.25,8.25-8.25s8.25,3.693,8.25,8.25c0,16.008-9.227,30.795-23.505,37.673 c-22.582,10.879-37.173,34.087-37.173,59.129C288.113,175.108,284.419,178.801,279.863,178.801z">
+										</path>
+									</g>
+									<rect x="310.197" style="fill:#3C66B1;" width="72.885" height="42.229"></rect>
+									<g style="opacity:0.39;">
+										<path style="fill:#3C66B1;"
+											d="M405.852,275.304c0-1.732,0.341-3.381,0.939-4.902H275.396c0.598,1.52,0.939,3.169,0.939,4.902 v30.154h129.517V275.304z">
+										</path>
+									</g>
+									<g style="opacity:0.35;">
+										<path style="fill:#3C66B1;"
+											d="M139.702,344.253c-23.302-14.069-47.317-12.423-60.363-9.91v176.37h116.352V341.484 C182.02,347.539,157.84,355.203,139.702,344.253z">
+										</path>
+									</g>
+									<rect x="310.197" y="21.12" style="fill:#4E8FE3;" width="72.885" height="21.12"></rect>
+									<g>
+										<polygon style="opacity:0.26;fill:#FFFFFF;enable-background:new ;"
+											points="194.348,345.601 79.339,434.782 79.339,353.03 194.348,263.848 "></polygon>
+										<path style="opacity:0.26;fill:#FFFFFF;enable-background:new ;"
+											d="M432.663,160.608c0-21.411-9.118-40.682-23.674-54.168 L255.084,260.346c2.15,1.574,4.777,2.504,7.633,2.46c7.502-0.117,13.619,5.929,13.619,13.403v31.181 c0,7.329-5.863,13.571-13.191,13.456c-7.502-0.117-13.619,5.929-13.619,13.404v100.532l156.327-156.329v-2.246 c0-7.474,6.118-13.521,13.619-13.403c0.755,0.012,1.488-0.059,2.207-0.177l10.74-10.74c0.156-0.826,0.244-1.674,0.244-2.54v-88.739 H432.663z">
+										</path>
+									</g>
+								</g>
+							</svg>
 							Вода
 						</div>
 						<div class="quiz__items">
@@ -313,9 +429,30 @@
 					</div>
 
 					<!-- Белок -->
-					<div class="quiz__box" data-section="Белок" data-color="#0bf">
+					<div class="quiz__box" data-section="Белок" data-color="#f6e6f6" data-icon=".egg-icon">
 						<div class="quiz__title quiz__title--icon">
-							<img src="egg-icon.svg" width="42" alt="Яйцо">
+							<svg class="egg-icon" height="42" width="42" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+								xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 511.998 511.998" xml:space="preserve">
+								<path style="fill:#FFDA79;" d="M249.679,457.109c-22.184,0-43.392-5.045-63.033-14.996c-6.071-3.076-9.894-9.304-9.891-16.11
+	c0.004-6.805,3.837-13.03,9.91-16.098c35.191-17.776,57.053-53.296,57.053-92.698c0-27.095-9.876-73.365-24.576-115.135
+	c-1.826-5.19-1.185-10.928,1.739-15.586c2.926-4.658,7.815-7.73,13.282-8.34c5.069-0.567,10.288-0.853,15.514-0.853
+	c38.733,0,102.205,15.253,154.349,37.092c49.256,20.629,107.97,55.215,107.97,102.822c0,47.6-58.715,82.181-107.97,102.809
+	C351.883,441.856,288.411,457.109,249.679,457.109z" />
+								<path style="fill:#FFC72D;" d="M431.302,335.248c-4.331,0-8.673-1.548-12.131-4.691c-4.53-4.116-22.669-18.801-65.921-34.961
+	c-9.336-3.489-14.078-13.885-10.59-23.223c3.49-9.337,13.884-14.075,23.223-10.589c46.217,17.267,68.433,33.763,77.563,42.061
+	c7.376,6.703,7.923,18.117,1.219,25.493C441.103,333.256,436.211,335.248,431.302,335.248z" />
+								<path style="fill:#FFEDBE;" d="M139.9,457.109C62.758,457.109,0,394.35,0,317.208c0-38.732,15.253-102.202,37.091-154.35
+	C57.72,113.602,92.3,54.889,139.9,54.889c57.137,0,95.505,84.706,113.29,135.198c16.173,45.962,26.624,95.857,26.624,127.121
+	c0,53.098-29.456,100.963-76.874,124.914C183.303,452.064,162.088,457.109,139.9,457.109z" />
+								<g>
+									<path style="fill:#FFC72D;" d="M101.392,225.369c-2.099,0-4.233-0.369-6.314-1.145c-9.336-3.489-14.078-13.885-10.589-23.223
+		c17.268-46.219,33.764-68.435,42.061-77.563c6.703-7.375,18.117-7.92,25.493-1.218c7.376,6.704,7.92,18.118,1.218,25.493
+		c-4.116,4.529-18.801,22.664-34.961,65.919C115.588,220.89,108.706,225.369,101.392,225.369z" />
+									<path style="fill:#FFC72D;" d="M76.162,335.249c-9.967,0-18.047-8.08-18.047-18.047c0-10.757,1.824-25.523,5.273-42.699
+		c1.962-9.771,11.467-16.103,21.246-14.14c9.772,1.962,16.104,11.474,14.14,21.246c-2.902,14.451-4.566,27.423-4.566,35.593
+		C94.209,327.17,86.129,335.249,76.162,335.249z" />
+								</g>
+							</svg>
 							Белок
 						</div>
 						<div class="quiz__items">
@@ -430,9 +567,61 @@
 					</div>
 
 					<!-- Жиры -->
-					<div class="quiz__box" data-section="Жиры" data-color="#fb0">
+					<div class="quiz__box" data-section="Жиры" data-color="#fb0" data-icon=".fats-icon">
 						<div class="quiz__title quiz__title--icon">
-							<img src="fats-icon.svg" width="42" alt="Жиры">
+							<svg class="fats-icon" height="42" width="42" version="1.1" id="Layer_1"
+								xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"
+								xml:space="preserve">
+								<path style="fill:#92D3D3;" d="M388.626,306.811l-0.891,2.561H152.11c12.86-14.961,28.656-27.626,46.861-37.104
+								c29.505-15.365,47.821-45.469,47.821-78.551V64.713h49.408v129.002c0,33.082,18.329,63.186,47.822,78.551
+								C361.166,281.202,376.197,292.963,388.626,306.811z" />
+								<path style="fill:#99E2FF;" d="M470.314,239.516c0,35.733-18.799,67.057-47.045,84.667c8.023,19.371,12.467,40.607,12.467,62.894
+								c0,28.7-7.359,55.686-20.292,79.174c-10.986,19.954-32.047,32.269-54.823,32.269h-169.8l-0.21-0.233
+								c-22.076,1.178-36.071-11.744-36.071-22.146c0-1.773,48.887-8.478,48.619-10.193l0.455-0.082h151.724
+								c14.881,0,28.455-8.525,34.881-21.948c8.408-17.575,12.863-36.945,12.863-56.841c0-33.144-12.28-64.246-33.622-88.014
+								c-10.414-11.604-23.009-21.458-37.377-28.945c-24.712-12.875-40.071-38.1-40.071-65.821V96.2h28.094h4.56v54.835
+								c13.75-7.149,29.365-11.219,45.949-11.219C425.683,139.817,470.314,184.459,470.314,239.516z M395.233,279.027
+								c13.167-8.222,21.925-22.834,21.925-39.499c0-25.715-20.84-46.555-46.555-46.555c-18.986,0-35.313,11.382-42.555,27.686
+								c3.755,8.665,10.426,15.977,19.114,20.502C365.484,250.7,381.775,263.598,395.233,279.027z" />
+								<path style="fill:#9AD14B;" d="M403.082,387.076c0,19.896-4.455,39.266-12.863,56.841c-6.426,13.423-20,21.948-34.881,21.948
+								H203.614l-0.455,0.082c-0.362-2.204-43.954-0.303-50.905-35.593c-1.808,0-3.592,0.07-5.353,0.233
+								c-4.828-13.843-7.359-28.525-7.359-43.511c0-32.152,11.557-62.392,31.732-85.868h197.439l0.746-2.146
+								C390.802,322.83,403.082,353.932,403.082,387.076z" />
+								<path style="fill:#99E2FF;" d="M250.612,96.2v108.096c0,27.721-15.347,52.946-40.071,65.821
+								c-15.254,7.942-28.49,18.554-39.266,31.091c-20.175,23.476-31.732,53.715-31.732,85.868c0,14.986,2.531,29.668,7.359,43.511
+								c5.505,13.33,11.137,26.45,4.14,30.391l-30.321,1.166c-2.834-1.598-3.988-27.266-7.207-28.385l0.047-0.152
+								c-4.338-14.764-6.671-30.368-6.671-46.532c0-63.453,35.943-118.51,88.573-145.928c13.773-7.172,22.496-21.318,22.496-36.852V96.2
+								h4.56H250.612z" />
+								<path style="fill:#9AD14B;" d="M188.978,442.657c5.738,4.677,10.064,10.438,12.455,16.852c0.793,2.088,1.364,4.233,1.726,6.437
+								c0.268,1.714,0.408,3.452,0.408,5.225c0,10.403-4.886,19.907-12.957,27.114c-9.4,8.408-23.103,13.703-38.357,13.703
+								c-11.044,0-21.248-2.776-29.622-7.487c13.12-7.382,13.108-59.255-0.012-66.649v-0.012c6.997-3.942,15.301-6.531,24.28-7.254
+								c1.761-0.163,3.545-0.233,5.353-0.233C166.645,430.354,179.66,435.065,188.978,442.657z" />
+								<path style="fill:#90BC42;" d="M135.927,471.183c0-17.651,14.087-32.682,33.803-38.376c-5.459-1.573-11.34-2.441-17.476-2.441
+								c-28.339,0-51.313,18.274-51.313,40.817S123.915,512,152.254,512c6.131,0,11.991-0.882,17.438-2.451
+								C149.995,503.847,135.927,488.823,135.927,471.183z" />
+								<g>
+									<path style="fill:#7EA33E;"
+										d="M258.274,418.482c-21.342,26.461-44.526,37.027-56.841,41.027
+									c-2.391-6.414-6.717-12.175-12.455-16.852c0.327-0.443,7.021-9.61,11.825-26.263C229.69,409.864,258.274,418.482,258.274,418.482z" />
+									<path style="fill:#7EA33E;" d="M204.803,365.583c2.239,20.945-0.327,38.065-4,50.812c-4.805,16.653-11.499,25.82-11.825,26.263
+									c-9.318-7.592-22.333-12.303-36.724-12.303C160.196,389.537,204.803,365.583,204.803,365.583z" />
+								</g>
+								<polygon style="fill:#F7B239;"
+									points="316.981,0 309.995,50.718 264.163,71.465 232.629,50.718 225.632,0 " />
+								<path style="fill:#7ECFE8;" d="M320.106,50.718c13.528,0,24.49,10.962,24.49,24.49c0,6.764-2.741,12.887-7.172,17.318
+								c-4.432,4.432-10.554,7.172-17.318,7.172h-28.094h-41.4h-28.094c-4,0-7.93-0.7-11.627-2.029c-3.709-1.341-7.184-3.3-10.251-5.854
+								l-20.584-17.038c-9.808-8.117-4.07-24.059,8.665-24.059h43.908h77.366L320.106,50.718L320.106,50.718z" />
+								<path style="fill:#69C2D6;" d="M254.286,91.816l-20.584-17.038c-9.808-8.117-4.07-24.059,8.665-24.059h-9.738h-43.908
+								c-12.735,0-18.473,15.942-8.665,24.059l20.584,17.038c3.067,2.554,6.542,4.513,10.251,5.854c3.697,1.329,7.627,2.029,11.627,2.029
+								h28.094h25.552c-4,0-7.93-0.7-11.627-2.029C260.828,96.329,257.353,94.369,254.286,91.816z" />
+								<polygon style="fill:#E09B2D;" points="225.632,0 232.629,50.718 267.615,50.718 260.618,0 " />
+								<path style="fill:#9AD14B;" d="M122.633,504.501c-8.373,4.723-18.589,7.499-29.633,7.499c-28.339,0-51.313-18.274-51.313-40.817
+								s22.974-40.817,51.313-40.817c7.289,0,14.228,1.213,20.514,3.394c3.219,1.12,6.274,2.496,9.108,4.093
+								c13.12,7.394,21.691,19.569,21.691,33.33S135.752,497.119,122.633,504.501z" />
+								<path style="fill:#90BC42;" d="M76.672,471.183c0-17.651,14.087-32.682,33.803-38.376c-5.459-1.573-11.34-2.441-17.476-2.441
+								c-28.339,0-51.313,18.274-51.313,40.817S64.66,512,92.999,512c6.131,0,11.991-0.882,17.438-2.451
+								C90.74,503.847,76.672,488.823,76.672,471.183z" />
+							</svg>
 							Жиры
 						</div>
 						<div class="quiz__items">
@@ -550,9 +739,45 @@
 					</div>
 
 					<!-- Углеводы и клетчатка -->
-					<div class="quiz__box" data-section="Углеводы и клетчатка" data-color="#0fb">
+					<div class="quiz__box" data-section="Углеводы и клетчатка" data-color="#0fb" data-icon=".broccoli-icon">
 						<div class="quiz__title quiz__title--icon">
-							<img src="broccoli-icon.svg" width="42" alt="Брокколи">
+							<svg class="broccoli-icon" height="42" width="42" version="1.1" id="Layer_1"
+								xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"
+								xml:space="preserve">
+								<path style="fill:#71A517;" d="M358.863,261.909c-3.605,9.007-7.793,20.107-12.178,32.966
+	c-16.997,49.815-36.943,126.092-36.943,209.815H202.245c0-83.723-19.946-160-36.931-209.815
+	c-4.386-12.872-8.573-23.972-12.178-32.979c10.989-1.437,21.011-5.909,29.213-12.55c11.088,14.42,26.314,25.484,43.893,31.443
+	c1.747,11.509,3.481,24.046,5.092,37.488c0.458,3.704,0.892,7.483,1.313,11.323c1.338,11.906,11.36,20.937,23.34,20.937H256
+	c11.98,0,22.015-9.031,23.34-20.937c0.421-3.841,0.855-7.619,1.301-11.323c1.611-13.442,3.345-25.979,5.117-37.488
+	c17.567-5.959,32.793-17.022,43.881-31.443C337.852,255.988,347.875,260.472,358.863,261.909z" />
+								<g>
+									<path style="fill:#648E13;" d="M196.875,300.312c8.621,7.128,18.546,12.737,29.367,16.405c1.672,0.57,3.37,1.09,5.092,1.561
+		c-1.611-13.442-3.345-25.979-5.092-37.488c-12.966-4.396-24.644-11.573-34.333-20.82l0,0c-1.698-1.62-3.335-3.304-4.908-5.047
+		c-0.028-0.031-0.057-0.061-0.085-0.093c-0.71-0.788-1.401-1.592-2.084-2.405c-0.089-0.107-0.182-0.208-0.271-0.315
+		c-0.754-0.907-1.493-1.827-2.213-2.763c-8.201,6.64-18.224,11.113-29.213,12.55c3.605,9.007,7.792,20.107,12.178,32.979
+		c16.985,49.815,36.931,126.092,36.931,209.815h29.733C231.978,423.952,213.43,350.147,196.875,300.312z" />
+									<path style="fill:#648E13;" d="M358.863,261.909c-3.605,9.007-7.793,20.107-12.178,32.966c-6.244-2.242-11.992-5.513-17.047-9.601
+		c-11.088,14.42-26.314,25.484-43.881,31.443c-1.685,0.57-3.395,1.09-5.117,1.561c1.611-13.442,3.345-25.979,5.117-37.488
+		c17.567-5.959,32.793-17.022,43.881-31.443C337.852,255.988,347.875,260.472,358.863,261.909z" />
+								</g>
+								<path style="fill:#9AD14B;"
+									d="M358.863,268.104c-10.989-1.437-21.011-5.922-29.225-12.562
+	c-11.088,14.42-26.314,25.484-43.881,31.443c-9.341,3.159-19.351,4.869-29.758,4.869c-10.407,0-20.417-1.71-29.758-4.869
+	c-17.58-5.959-32.805-17.022-43.893-31.443c-8.201,6.64-18.224,11.113-29.213,12.55c-2.515,0.335-5.092,0.508-7.693,0.508
+	c-0.31,0-0.607-0.025-0.917-0.025c-4.894,27.503-28.903,48.39-57.806,48.39c-32.434,0-58.735-26.289-58.735-58.735
+	c0-10.345,2.688-20.07,7.396-28.519C14.148,216.505,0,192.966,0,166.108c0-41.341,33.511-74.853,74.852-74.853
+	c3.531,0,7.012,0.273,10.419,0.743c5.835-35.531,36.671-62.65,73.849-62.65c15.337,0,29.597,4.633,41.477,12.55
+	c9.676-20.441,30.476-34.589,54.597-34.589c24.443,0,45.479,14.544,54.981,35.432c12.116-8.424,26.822-13.392,42.704-13.392
+	c37.178,0,68.014,27.119,73.837,62.65c3.407-0.471,6.888-0.743,10.431-0.743c41.341,0,74.853,33.511,74.853,74.853
+	c0,26.859-14.148,50.397-35.395,63.604c4.708,8.449,7.396,18.174,7.396,28.519c0,32.446-26.289,58.735-58.722,58.735
+	c-28.915,0-52.924-20.887-57.806-48.39c-0.31,0-0.619,0.025-0.929,0.025C363.943,268.599,361.378,268.426,358.863,268.104z" />
+								<path style="fill:#90BC42;" d="M117.185,258.23c0-10.345,2.688-20.07,7.396-28.519c-21.234-13.206-35.382-36.745-35.382-63.604
+	c0-41.341,33.511-74.853,74.852-74.853c3.531,0,7.012,0.273,10.419,0.743c67.902-101.401,121.296-60.567,125.322-64.98
+	c-11.038-12.105-26.926-19.709-44.597-19.709c-24.121,0-44.921,14.148-54.597,34.589c-11.881-7.916-26.14-12.55-41.477-12.55
+	c-37.178,0-68.014,27.119-73.849,62.65c-3.407-0.471-6.888-0.743-10.419-0.743C33.511,91.255,0,124.767,0,166.108
+	c0,26.859,14.148,50.397,35.382,63.604c-4.708,8.449-7.396,18.174-7.396,28.519c0,32.446,26.301,58.735,58.735,58.735
+	c17.85,0,33.826-7.973,44.593-20.544C122.513,286.152,117.185,272.818,117.185,258.23z" />
+							</svg>
 							Углеводы и клетчатка
 						</div>
 						<div class="quiz__items">
@@ -667,9 +892,38 @@
 					</div>
 
 					<!-- Организация приемов пищи -->
-					<div class="quiz__box" data-section="Организация приемов пищи" data-color="#b0f">
+					<div class="quiz__box" data-section="Организация приемов пищи" data-color="#b0f" data-icon=".plate-icon">
 						<div class="quiz__title quiz__title--icon">
-							<img src="plate-icon.svg" width="42" alt="Тарелка и приборы">
+							<svg class="plate-icon" height="42" width="42" version="1.1" id="Layer_1"
+								xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+								viewBox="0 0 511.999 511.999" xml:space="preserve">
+								<circle style="fill:#FFD630;" cx="255.996" cy="255.915" r="255.915" />
+								<path style="fill:#F5BE18;" d="M511.917,251.469l-102.334-101.84l-1.484,71.189l-66.74-67.07L227.656,258.555L116.259,147.157
+	l0.329,8.57l-8.569-8.57l0.329,7.086l-7.086-7.086l0.329,8.899l-8.569-8.57l-3.295,41.856l-0.988,7.415l15.16,13.018l0.165,156.055
+	l3.625,3.131l-0.165,0.165l142.872,142.872c1.813,0,3.791,0,5.603,0c141.389,0,255.917-114.528,255.917-255.917
+	C511.917,254.599,511.917,253.116,511.917,251.469z" />
+								<path style="fill:#FFFFFF;" d="M402.333,147.816l1.483,107.772v0.988h-2.637c-0.988,0-1.648,0.659-1.648,1.484l0,0
+	c0,0.824,0.824,1.483,1.648,1.483h2.472l-4.449,91.623c0,0-0.659,9.887,11.535,12.524c0,0,9.064-2.307,10.546-11.7
+	c1.319-8.239-3.791-76.463-4.944-92.447h3.46c0.988,0,1.648-0.659,1.648-1.483l0,0c0-0.824-0.824-1.484-1.648-1.484h-3.625v-0.659
+	c0,0-1.813-8.404,10.711-12.359c0,0-6.427-67.728-11.371-83.053s-12.689-16.15-13.018-12.689H402.333z" />
+								<path style="fill:#E84F4F;" d="M403.816,256.577h-2.637c-0.988,0-1.648,0.659-1.648,1.484l0,0c0,0.824,0.824,1.483,1.648,1.483
+	h2.472l-4.449,91.623c0,0-0.659,9.887,11.535,12.524c0,0,9.064-2.307,10.546-11.7c1.319-8.239-3.791-76.463-4.944-92.447h3.46
+	c0.988,0,1.648-0.659,1.648-1.483l0,0c0-0.824-0.824-1.484-1.648-1.484h-3.625H403.98H403.816z" />
+								<path style="fill:#FFFFFF;" d="M108.184,147.157c0,0,2.307,36.748,2.307,44.657h4.614l-0.494-44.163c0,0,0.494-1.648,1.648-0.329
+	c0,0,5.932,40.538,5.932,45.647c0,0,0.988,10.052-0.329,13.678c-1.319,3.625-13.843,11.7-13.843,14.666l-0.494,21.258
+	c2.637,0.824,4.449,2.801,4.449,4.779c0,2.142-1.483,3.791-4.285,4.779l4.12,7.415c0,0,2.307,73.496,3.625,86.844
+	c-2.801,14.172-9.393,19.775-10.876,19.775c-3.295-0.165-9.723-10.546-10.876-18.951l4.285-87.338l3.625-7.415
+	c0,0-0.494-0.165-1.153-0.494c-1.978-0.988-3.295-2.637-3.295-4.449c0-1.978,1.648-3.791,3.955-4.614
+	c0-1.483-0.329-20.929-0.494-21.258c-0.824-4.779-11.535-10.052-13.678-13.183c-2.142-3.295-0.988-15.325-0.988-15.325
+	c0-4.944,5.932-45.647,5.932-45.647c1.153-1.319,1.648,0.329,1.648,0.329l-0.494,44.493h4.12c0-7.58,3.131-44.822,3.131-44.822
+	c1.153-1.319,1.648,0,1.648,0l1.978,44.657h2.142l0.988-44.657c0,0,0.659-1.319,1.648,0L108.184,147.157z" />
+								<path style="fill:#E84F4F;" d="M107.69,251.963l3.955,7.251c0,0,2.307,73.496,3.625,86.844
+	c-2.801,14.172-9.393,19.775-10.876,19.775c-3.295-0.165-9.723-10.546-10.876-18.951l4.285-87.338l3.625-7.415h6.262L107.69,251.963
+	L107.69,251.963z" />
+								<circle style="fill:#FF873D;" cx="258.307" cy="255.915" r="131.834" />
+								<circle style="fill:#FFFFFF;" cx="258.307" cy="255.915" r="125.072" />
+								<circle style="fill:#FFE8D1;" cx="258.307" cy="255.915" r="98.05" />
+							</svg>
 							Организация приемов пищи
 						</div>
 						<div class="quiz__items">
@@ -783,9 +1037,72 @@
 					</div>
 
 					<!-- Разнообразие продуктов питания -->
-					<div class="quiz__box" data-section="Разнообразие продуктов питания" data-color="#bf0">
+					<div class="quiz__box" data-section="Разнообразие" data-color="#bf0" data-icon=".rainbow-icon">
 						<div class="quiz__title quiz__title--icon">
-							<img src="rainbow-icon.svg" width="42" alt="Радуга">
+							<svg class="rainbow-icon" height="42" width="42" version="1.1" id="Layer_1"
+								xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512"
+								xml:space="preserve">
+								<path style="fill:#F95428;" d="M495.304,297.74c0,9.461-0.557,19.033-1.67,28.383c0,0.223-0.11,0.223-0.11,0.445L395.019,300.3
+	c0.111-0.89,0.111-1.67,0.111-2.56c0-76.689-62.442-139.13-139.13-139.13s-139.13,62.442-139.13,139.13v2.115l-98.504,26.49
+	c0-0.111,0-0.111,0-0.223c-1.113-9.35-1.67-18.922-1.67-28.383C16.696,165.844,123.993,58.435,256,58.435
+	S495.304,165.844,495.304,297.74z" />
+								<path style="fill:#F5B420;" d="M428.522,297.74c0,2.894-0.111,5.677-0.223,8.459c0,0.223,0,0.223,0,0.334l-109.191,29.273
+	c0.111-1.892,0.669-3.896,1.559-5.677c5.12-10.129,7.679-21.037,7.679-32.39c0-39.847-32.5-72.348-72.348-72.348
+	s-72.348,32.501-72.348,72.348c0,11.353,2.56,22.261,7.679,32.39c1.114,2.226,1.671,4.563,1.671,6.901L83.922,307.757
+	c-0.111-0.445-0.223-1.002-0.223-1.558c-0.111-2.783-0.223-5.565-0.223-8.459c0-95.165,77.357-172.522,172.522-172.522
+	S428.522,202.574,428.522,297.74z" />
+								<path style="fill:#EA3B18;"
+									d="M495.304,297.74c0,9.461-0.557,19.033-1.67,28.383c0,0.223-0.11,0.223-0.11,0.445L395.019,300.3
+	c0.111-0.89,0.111-1.67,0.111-2.56c0-76.689-62.442-139.13-139.13-139.13V58.435C388.007,58.435,495.304,165.844,495.304,297.74z" />
+								<path style="fill:#F09C12;" d="M428.522,297.74c0,2.894-0.111,5.677-0.223,8.459c0,0.223,0,0.223,0,0.334l-109.191,29.273
+	c0.111-1.892,0.669-3.896,1.559-5.677c5.12-10.129,7.679-21.037,7.679-32.39c0-39.847-32.5-72.348-72.348-72.348V125.218
+	C351.165,125.218,428.522,202.574,428.522,297.74z" />
+								<path style="fill:#E6563A;" d="M477.065,340.897c-0.663,0-1.326-0.038-1.989-0.119c-9.163-1.087-15.696-9.392-14.609-18.549
+	c0.956-8.076,1.446-16.315,1.446-24.489c0-113.544-92.369-205.913-205.913-205.913S50.087,184.196,50.087,297.74
+	c0,8.174,0.489,16.413,1.446,24.489c1.087,9.158-5.446,17.461-14.609,18.549c-8.968,1.12-17.446-5.446-18.543-14.603
+	c-1.12-9.381-1.685-18.951-1.685-28.435C16.696,165.788,124.043,58.435,256,58.435S495.304,165.788,495.304,297.74
+	c0,9.484-0.565,19.054-1.685,28.435C492.609,334.658,485.403,340.897,477.065,340.897z" />
+								<path style="fill:#D9472B;" d="M461.913,297.74c0,8.174-0.489,16.413-1.446,24.489c-1.087,9.158,5.446,17.461,14.609,18.549
+	c0.663,0.081,1.326,0.119,1.989,0.119c8.337,0,15.544-6.239,16.554-14.723c1.12-9.381,1.685-18.951,1.685-28.435
+	c0-131.951-107.347-239.304-239.304-239.304v33.391C369.544,91.827,461.913,184.196,461.913,297.74z" />
+								<path style="fill:#FFC033;" d="M411.652,322.169c-0.26,0-0.522-0.006-0.794-0.017c-9.206-0.43-16.326-8.244-15.891-17.457
+	c0.109-2.31,0.162-4.625,0.162-6.957c0-76.718-62.413-139.13-139.13-139.13s-139.13,62.413-139.13,139.13
+	c0,2.332,0.055,4.647,0.163,6.957c0.435,9.212-6.685,17.027-15.891,17.457c-9.424,0.326-17.033-6.696-17.457-15.902
+	c-0.13-2.82-0.206-5.658-0.206-8.51c0-95.131,77.391-172.522,172.522-172.522s172.522,77.391,172.522,172.522
+	c0,2.853-0.076,5.69-0.207,8.51C427.902,315.197,420.522,322.169,411.652,322.169z" />
+								<path style="fill:#F9A926;" d="M395.13,297.74c0,2.332-0.055,4.647-0.162,6.957c-0.435,9.212,6.685,17.027,15.891,17.457
+	c0.272,0.011,0.533,0.017,0.794,0.017c8.87,0,16.25-6.973,16.663-15.919c0.13-2.82,0.207-5.658,0.207-8.51
+	c0-95.131-77.391-172.522-172.522-172.522v33.391C332.718,158.609,395.13,221.022,395.13,297.74z" />
+								<path style="fill:#3AACE6;" d="M335.608,354.283c-2.522,0-5.087-0.577-7.49-1.788c-8.239-4.142-11.555-14.179-7.413-22.413
+	c5.067-10.088,7.642-20.968,7.642-32.343c0-39.891-32.456-72.348-72.348-72.348s-72.348,32.456-72.348,72.348
+	c0,11.375,2.576,22.255,7.641,32.343c4.142,8.233,0.826,18.272-7.413,22.413c-8.218,4.142-18.272,0.831-22.413-7.413
+	c-7.434-14.783-11.206-30.708-11.206-47.343c0-58.305,47.435-105.739,105.739-105.739s105.739,47.435,105.739,105.739
+	c0,16.636-3.772,32.56-11.206,47.342C347.598,350.913,341.718,354.283,335.608,354.283z" />
+								<path style="fill:#2B9FD9;" d="M328.348,297.74c0,11.375-2.576,22.255-7.641,32.343c-4.142,8.233-0.826,18.272,7.413,22.413
+	c2.402,1.212,4.968,1.788,7.49,1.788c6.108,0,11.989-3.369,14.924-9.202c7.434-14.782,11.206-30.707,11.206-47.342
+	c0-58.305-47.435-105.739-105.739-105.739v33.391C295.891,225.392,328.348,257.848,328.348,297.74z" />
+								<path style="fill:#FF9F19;" d="M445.076,322.065c-0.217,0-0.435-0.006-0.652-0.011c-9.217-0.358-16.402-8.114-16.043-17.331
+	c0.087-2.315,0.141-4.647,0.141-6.983c0-95.131-77.391-172.522-172.522-172.522S83.478,202.609,83.478,297.74
+	c0,2.337,0.055,4.668,0.141,6.983c0.358,9.217-6.826,16.973-16.043,17.331c-9.261,0.396-16.967-6.821-17.326-16.038
+	c-0.109-2.749-0.164-5.505-0.164-8.277c0-113.544,92.369-205.913,205.913-205.913s205.913,92.369,205.913,205.913
+	c0,2.771-0.055,5.527-0.163,8.278C461.402,315.006,454,322.065,445.076,322.065z" />
+								<path style="fill:#F28618;" d="M428.522,297.74c0,2.337-0.055,4.668-0.141,6.983c-0.358,9.217,6.826,16.973,16.043,17.331
+	c0.217,0.006,0.435,0.011,0.652,0.011c8.924,0,16.326-7.06,16.673-16.049c0.109-2.75,0.163-5.505,0.163-8.278
+	c0-113.544-92.369-205.913-205.913-205.913v33.391C351.131,125.218,428.522,202.609,428.522,297.74z" />
+								<path style="fill:#88CC2A;" d="M369.695,359.87c-2.076,0-4.185-0.386-6.217-1.207c-8.555-3.435-12.707-13.157-9.272-21.712
+	c5.001-12.462,7.533-25.651,7.533-39.211c0-58.305-47.435-105.739-105.739-105.739S150.261,239.435,150.261,297.74
+	c0,13.56,2.532,26.75,7.533,39.211c3.435,8.555-0.718,18.277-9.272,21.712c-8.51,3.403-18.283-0.707-21.707-9.277
+	c-6.598-16.429-9.946-33.81-9.946-51.646c0-76.718,62.413-139.13,139.13-139.13s139.13,62.413,139.13,139.13
+	c0,17.837-3.348,35.218-9.946,51.646C382.576,355.908,376.304,359.87,369.695,359.87z" />
+								<path style="fill:#7FB335;" d="M361.739,297.74c0,13.56-2.532,26.75-7.533,39.211c-3.435,8.555,0.718,18.277,9.272,21.712
+	c2.032,0.82,4.142,1.207,6.217,1.207c6.609,0,12.88-3.962,15.489-10.484c6.598-16.429,9.946-33.81,9.946-51.646
+	c0-76.718-62.413-139.13-139.13-139.13v33.391C314.305,192.001,361.739,239.435,361.739,297.74z" />
+								<path style="fill:#DAE1E6;" d="M428.522,286.609c-27.217,0-52.522,13.468-67.989,35.299c-41.263-10.266-82.272,21.455-82.272,64.875
+	c0,36.826,29.956,66.783,66.783,66.783h83.478c46.032,0,83.478-37.446,83.478-83.478S474.554,286.609,428.522,286.609z" />
+								<path style="fill:#EDF0F2;"
+									d="M151.467,321.908c-15.468-21.831-40.772-35.299-67.989-35.299C37.446,286.609,0,324.055,0,370.087
+	s37.446,83.478,83.478,83.478h83.478c36.826,0,66.783-29.956,66.783-66.783C233.739,343.433,192.802,311.625,151.467,321.908z" />
+							</svg>
 							Разнообразие продуктов питания
 						</div>
 						<div class="quiz__items">
@@ -897,200 +1214,359 @@
 								</div>
 							</div>
 						</div>
-						<button class="quiz__btn">Завершить тест</button>
+						<div class="quiz__error">Пожалуйста, ответьте на все вопросы.</div>
+						<button class="quiz__btn" id="submit-btn" type="submit">Завершить тест</button>
 					</div>
 
 				</form>
 
-				<p>Заполнить колесо пищевого баланса и проанализировать, какие сферы требуют мер по работе с ними.</p>
 				<p><b>Если сектор заполнен менее, чем на половину </b> (ответили положительно меньше, чем на 4 вопросов) -
 					значит в данный момент эта сфера значительно "проседает" и для восстановления баланса необходимо заняться ее
 					коррекцией в первую очередь.</p>
 
-				<style>
-					.wheel {
-						display: flex;
-						justify-content: center;
-						position: relative;
-						overflow: hidden;
-					}
-
-					.wheel__canvas {
-						display: none;
-						width: 600px;
-						height: 600px;
-						object-fit: contain;
-					}
-				</style>
-
+				<div class="quiz__download-btn-wrapper">
+					<button id="download-btn" class="quiz__btn quiz__download-btn" type="button">Скачать колесо баланса</button>
+				</div>
 				<div class="wheel">
-					<canvas class="wheel__canvas" id="wheel" width="600" height="600"></canvas>
-
+					<canvas class="wheel__canvas" id="wheel" width="660" height="660"></canvas>
 				</div>
 			</div>
 		</div>
 	</section>
 
-
-
 	<script>
-		const submitBtn = document.querySelector('.quiz__btn');
+		const submitBtn = document.querySelector('#submit-btn');
+		const downloadBtn = document.querySelector('#download-btn');
+		const error = document.querySelector('.quiz__error');
+		const items = document.querySelectorAll('.quiz__item');
+		const section = document.querySelector('.quiz');
+		const boxes = document.querySelectorAll('.quiz__box');
 		const sectors = [];
+		const templateCanvas = document.querySelector("#wheel-template");
+		const wheelCanvas = document.querySelector("#wheel");
+
+		const wheel = {
+			steps: 9,
+			sectors: 6
+		}
+
+		items.forEach(item => {
+			const inputs = item.querySelectorAll('input');
+			let itemValid = false;
+
+			inputs.forEach(input => {
+				if (input.checked === true) itemValid = true;
+
+				input.addEventListener('change', e => {
+					item.classList.remove('is-invalid');
+					itemValid = true;
+				})
+			})
+		})
 
 		submitBtn.addEventListener('click', function (e) {
 			e.preventDefault();
 
-			const boxes = document.querySelectorAll('.quiz__box');
-
-			boxes.forEach(box => {
+			boxes.forEach((box, i) => {
 				let progress = 0;
+				const items = box.querySelectorAll('.quiz__item');
 
-				const inputs = box.querySelectorAll('.quiz__item input');
+				items.forEach(item => {
+					const inputs = item.querySelectorAll('input');
+					let isCheckedSome = false;
 
-				inputs.forEach(input => {
-					if (input.checked === true && input.value === 'Да') {
-						progress++;
+					inputs.forEach(input => {
+						if (input.checked === true) {
+							isCheckedSome = true;
+							if (input.value === 'Да') {
+								progress++;
+							}
+						}
+					})
+
+					if (!isCheckedSome) {
+						item.classList.add('is-invalid');
+						section.classList.add('is-invalid');
 					}
 				})
 
+				sectors[i].progress = progress;
+			})
+
+			let isInvalid = document.querySelectorAll('.quiz__item.is-invalid');
+
+			if (isInvalid.length > 0) return;
+
+			section.classList.remove('is-invalid');
+			section.classList.add('is-finished');
+			fillWheel();
+		})
+
+		initSectors();
+		drawTemplate(templateCanvas.getContext`2d`, templateCanvas.width);
+
+		function initSectors() {
+			boxes.forEach(box => {
 				sectors.push({
 					color: box.dataset.color,
 					label: box.dataset.section,
-					progress: 5
+					icon: box.dataset.icon
 				})
-
-				// console.log(progress);
 			})
 
-			initCanvas();
+			wheel.sectors = sectors.length;
 
-			submitBtn.style.display = 'none';
-		})
+		}
 
-		// const sectors = [
-		// 	{ color: "#f82", label: "Разнообразие", progress: 8 },
-		// 	{ color: "#0bf", label: "Вода", progress: 5 },
-		// 	{ color: "#fb0", label: "Белок", progress: 3 },
-		// 	{ color: "#0fb", label: "Жиры", progress: 7 },
-		// 	{ color: "#b0f", label: "Углеводы и клетчатка", progress: 5 },
-		// 	{ color: "#bf0", label: "Организация приемов пищи", progress: 7 },
-		// ];
-
-		function initCanvas() {
-			const canvas = document.querySelector("#wheel");
-			const ctx = canvas.getContext`2d`;
+		function fillWheel() {
+			const ctx = wheelCanvas.getContext`2d`;
 			const dia = ctx.canvas.width;
 			const rad = dia / 2;
-			const arc = 2 * Math.PI / sectors.length;
-			let ang = 0; // Angle rotation in radians
-			const steps = 8;
-			const step = rad / steps;
-			let fault = 39.5;
-
-			const drawTemplate = () => {
-
-				// Middle vertical line
-				ctx.beginPath();
-				ctx.moveTo(rad, 0);
-				ctx.lineTo(rad, dia);
-				ctx.stroke();
-
-				// Arrows
-				const from1 = { x: fault, y: (rad - rad / 2) }
-				const to1 = { x: dia - fault, y: (rad + rad / 2) }
-				const from2 = { x: fault, y: (rad + rad / 2) }
-				const to2 = { x: dia - fault, y: (rad - rad / 2) }
-				ctx.beginPath();
-				drawArrow(ctx, from1.x, from1.y, to1.x, to1.y);
-				ctx.stroke();
-
-				ctx.beginPath();
-				drawArrow(ctx, from2.x, from2.y, to2.x, to2.y);
-				ctx.stroke();
-
-				for (let i = 1; i <= steps; i++) {
-					ctx.beginPath();
-					ctx.arc(rad, rad, (step * i), 0, 2 * Math.PI);
-					ctx.stroke();
-					ctx.restore();
-				}
-			}
+			const step = rad / wheel.steps;
+			const startAngle = -90;
+			let ang = startAngle;
+			const rotateStep = 360 / sectors.length;
 
 			const drawSector = (sector, i) => {
-				ang = arc * i;
-				console.log(radiansToDegrees(ang))
 				ctx.save();
-				// COLOR
 				ctx.beginPath();
 				ctx.fillStyle = sector.color;
 				ctx.moveTo(rad, rad);
-				ctx.arc(rad, rad, (step * sector.progress), ang - Math.PI / 2, ang + arc - Math.PI / 2);
+				ctx.arc(rad, rad, (step * sector.progress), degreesToRadians(ang), degreesToRadians(ang + rotateStep));
 				ctx.lineTo(rad, rad);
 				ctx.fill();
 				ctx.moveTo(rad, rad);
-				// TEXT
-				ctx.fillStyle = "#161616";
-				ctx.textAlign = "right";
-				ctx.font = "bold 16px sans-serif";
-				// drawTextAlongArc(ctx, sector.label, rad, rad, rad, ang);
-				ctx.translate(rad, rad);
-				// ctx.rotate(ang + arc / 2);
-				ctx.fillText(sector.label, rad, 30);
+				ctx.restore();
+
+				ang += rotateStep;
+			}
+
+			drawTemplate(ctx, dia);
+			wheelCanvas.style.display = 'block';
+			sectors.forEach(drawSector);
+
+			downloadBtn.addEventListener('click', (e) => {
+				e.preventDefault();
+
+				const downloadLink = document.createElement('a');
+				const canvasDataUrl = ctx.canvas.toDataURL('image/png');
+
+				downloadLink.href = canvasDataUrl;
+
+				downloadLink.download = 'Колесо-Пищевого-Баланса.png';
+
+				downloadLink.click();
+			});
+		}
+
+		function drawTemplate(ctx, dia) {
+			const fault = 39.5;
+			const rad = dia / 2;
+			const step = rad / wheel.steps;
+			const rotateStep = 360 / wheel.sectors;
+
+			// Lines data
+			const from1 = { x: fault, y: (rad - rad / 2) };
+			const to1 = { x: dia - fault, y: (rad + rad / 2) };
+			const from2 = { x: fault, y: (rad + rad / 2) };
+			const to2 = { x: dia - fault, y: (rad - rad / 2) };
+			const from3 = { x: rad, y: 0 };
+			const to3 = { x: rad, y: dia };
+
+			// Vertical arrow line
+			ctx.beginPath();
+			drawArrow(ctx, from3.x, from3.y, to3.x, to3.y);
+			ctx.stroke();
+
+			// Horizontal arrow lines
+			ctx.beginPath();
+			drawArrow(ctx, from1.x, from1.y, to1.x, to1.y);
+			ctx.stroke();
+
+			ctx.beginPath();
+			drawArrow(ctx, from2.x, from2.y, to2.x, to2.y);
+			ctx.stroke();
+
+			// Circles
+			for (let i = 1; i < wheel.steps; i++) {
+				ctx.beginPath();
+				ctx.arc(rad, rad, (step * i), 0, 2 * Math.PI);
+				ctx.stroke();
 				ctx.restore();
 			}
 
-			function drawTextAlongArc(context, str, centerX, centerY, radius, angle) {
-				context.save();
-				context.translate(centerX, centerY);
-				context.rotate(-1 * angle / 2);
-				context.rotate(-1 * (angle / str.length) / 2);
-				for (var n = 0; n < str.length; n++) {
-					context.rotate(angle / str.length);
-					context.save();
-					context.translate(0, -1 * radius);
-					var char = str[n];
-					context.fillText(char, 0, 0);
-					context.restore();
+			// Text
+			ctx.fillStyle = "#161616";
+			ctx.textBaseline = 'middle';
+			ctx.font = "18px sans-serif";
+
+			const startAngle = 30;
+			let ang = startAngle;
+
+			// Images
+			const startAngle2 = -90;
+			let ang2 = startAngle2;
+
+			for (let i = 0; i < wheel.sectors; i++) {
+				// const x_start = rad * Math.cos(degreesToRadians(ang2)) + rad;
+				// const y_start = rad * Math.sin(degreesToRadians(ang2)) + rad;
+				// const x_end = rad * Math.cos(degreesToRadians(ang2 + rotateStep)) + rad;
+				// const y_end = rad * Math.sin(degreesToRadians(ang2 + rotateStep)) + rad;
+				// const x_middle = (x_start + x_end) / 2;
+				// const y_middle = (y_start + y_end) / 2;
+
+				// ctx.fillRect(x_middle, y_middle, 12, 12);
+
+				// const imageWidth = 32;
+				// const imageHeight = 32;
+
+				// Определите положение сектора на основе геометрических координат
+				// const centerX = ctx.canvas.width / 2;
+				// const centerY = ctx.canvas.height / 2;
+
+				// const dx = x_middle - centerX;
+				// const dy = y_middle - centerY;
+
+				// let isLeftSector = false;
+				// let isRightSector = false;
+				// let isBottomSector = false;
+				// let isTopSector = false;
+
+				// if (dx < 0) {
+				// 	isLeftSector = true;
+				// } else if (dx > 0) {
+				// 	isRightSector = true;
+				// }
+
+				// if (dy > 0) {
+				// 	isBottomSector = true;
+				// } else if (dy < 0) {
+				// 	isTopSector = true;
+				// }
+
+				// // Отступы для изображения в зависимости от положения сектора
+				// const imageBaseOffset = 100;
+				// let imageOffsetX = 0;
+				// let imageOffsetY = 0;
+
+				// if (isLeftSector) {
+				// 	imageOffsetX = -(imageBaseOffset + imageWidth);
+				// 	console.log('left: ', sectors[i])
+				// } else if (isRightSector) {
+				// 	imageOffsetX = imageBaseOffset + imageWidth;
+				// 	console.log('right: ', sectors[i])
+				// }
+
+				// if (isBottomSector) {
+				// 	imageOffsetY = imageBaseOffset + imageHeight;
+				// 	console.log('bottom: ', sectors[i])
+				// } else if (isTopSector) {
+				// 	imageOffsetY = -(imageBaseOffset + imageHeight);
+				// 	console.log('top: ', sectors[i])
+				// }
+
+				drawTextOnArc(ctx, sectors[i].label, rad, rad, rad, ang);
+				// drawImage(ctx, sectors[i].icon, x_middle + imageOffsetX, y_middle + imageOffsetY, imageWidth, imageHeight);
+
+				ang += rotateStep;
+				// ang2 += rotateStep;
+			}
+
+
+			function drawImage(ctx, selector, x, y, imageWidth, imageHeight) {
+				var img = new Image();
+				const svg = document.querySelector(selector);
+
+				// get svg data
+				var xml = new XMLSerializer().serializeToString(svg);
+
+				// make it base64
+				var svg64 = btoa(xml);
+				var b64Start = 'data:image/svg+xml;base64,';
+
+				// prepend a "header"
+				var image64 = b64Start + svg64;
+
+				// set it as the source of the img element
+				img.src = image64;
+
+				svg.insertAdjacentElement('afterend', img);
+				ctx.drawImage(img, x, y, imageWidth, imageHeight);
+			}
+
+			function drawTextOnArc(ctx, text, x, y, radius, rotation) {
+				let yPosition = radius - fault / 2;
+
+				ctx.save();
+				ctx.translate(x, y);
+
+				const isBottomHalf = (rotation >= 150 && rotation <= 210);
+
+				if (isBottomHalf) {
+					text = text.split('').reverse().join('');
+					ctx.scale(-1, -1);
 				}
-				context.restore();
+
+				ctx.rotate(degreesToRadians(rotation));
+
+				const textWidth = ctx.measureText(text).width;
+				const letterSpacing = (textWidth / text.length) - 7.5;
+				let startAngle = -((textWidth + letterSpacing * text.length) / (2 * radius));
+
+
+				for (var i = 0; i < text.length; i++) {
+					ctx.save();
+					ctx.rotate(startAngle);
+
+					if (isBottomHalf) {
+						ctx.textBaseline = 'top';
+						ctx.fillText(text[i], 0, yPosition);
+
+					} else {
+						ctx.fillText(text[i], 0, -yPosition);
+					}
+
+					ctx.restore();
+
+					startAngle += (ctx.measureText(text[i]).width + letterSpacing) / radius;
+
+				}
+				ctx.restore();
 			}
 
-			function drawArrow(context, fromx, fromy, tox, toy) {
-				var headlen = 10;
-				var dx = tox - fromx;
-				var dy = toy - fromy;
+		}
 
-				var dx2 = fromx - tox;
-				var dy2 = fromy - toy;
+		function drawArrow(context, fromx, fromy, tox, toy) {
+			var headlen = 10;
+			var dx = tox - fromx;
+			var dy = toy - fromy;
 
-				var angle = Math.atan2(dy, dx);
-				var angle2 = Math.atan2(dy2, dx2);
+			var dx2 = fromx - tox;
+			var dy2 = fromy - toy;
 
-				context.moveTo(fromx, fromy);
+			var angle = Math.atan2(dy, dx);
+			var angle2 = Math.atan2(dy2, dx2);
 
-				context.lineTo(tox, toy);
-				context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
-				context.moveTo(tox, toy);
-				context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+			context.moveTo(fromx, fromy);
 
-				context.moveTo(fromx, fromy);
+			context.lineTo(tox, toy);
+			context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+			context.moveTo(tox, toy);
+			context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
 
-				context.lineTo(fromx - headlen * Math.cos(angle2 - Math.PI / 6), fromy - headlen * Math.sin(angle2 - Math.PI / 6));
-				context.moveTo(fromx, fromy);
-				context.lineTo(fromx - headlen * Math.cos(angle2 + Math.PI / 6), fromy - headlen * Math.sin(angle2 + Math.PI / 6));
-			}
+			context.moveTo(fromx, fromy);
 
-			function degreesToRadians(degrees) {
-				return degrees * (Math.PI / 180);
-			}
+			context.lineTo(fromx - headlen * Math.cos(angle2 - Math.PI / 6), fromy - headlen * Math.sin(angle2 - Math.PI / 6));
+			context.moveTo(fromx, fromy);
+			context.lineTo(fromx - headlen * Math.cos(angle2 + Math.PI / 6), fromy - headlen * Math.sin(angle2 + Math.PI / 6));
+		}
 
-			function radiansToDegrees(radians) {
-				return radians * (180 / Math.PI);
-			}
+		function degreesToRadians(degrees) {
+			return degrees * (Math.PI / 180);
+		}
 
-			canvas.style.display = 'block';
-			sectors.forEach(drawSector);
-			drawTemplate();
+		function radiansToDegrees(radians) {
+			return radians * (180 / Math.PI);
 		}
 
 	</script>
